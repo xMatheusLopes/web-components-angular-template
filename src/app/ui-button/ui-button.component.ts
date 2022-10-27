@@ -1,5 +1,4 @@
-import { Component, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
-import { EventEmitter } from 'stream';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ButtonService } from './button.service';
 
 @Component({
@@ -15,17 +14,14 @@ export class UiButtonComponent implements OnInit {
   @Input()
   text = '';
 
+  @Output('text-changed')
+  textChanged = new EventEmitter();
+
   ngOnInit(): void {
     this.buttonService.currentText = this.text;
 
     this.buttonService.textChanged$.subscribe(text => {
-      this.output({teste: "ok"})
+      this.textChanged.emit({teste: text});
     })
   }
-
-  output(data: any) {
-    const event = new CustomEvent('text-changed', { detail: data });
-    document.dispatchEvent(event)
-  }
-
 }
