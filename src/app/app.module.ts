@@ -1,4 +1,4 @@
-import { Injector, NgModule } from '@angular/core';
+import { Injector, NgModule, Type } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -14,17 +14,18 @@ import { UiButtonComponent } from './ui-button/ui-button.component';
     BrowserModule
   ],
   providers: [],
-  entryComponents: [UiButtonComponent],
+  entryComponents: [UiButtonComponent], // Import all components to bundle
 })
 export class AppModule {
   constructor(private injector: Injector) {}
 
   ngDoBootstrap() {
-    // using createCustomElement from angular package it will convert angular component to stander web component
-    const el = createCustomElement(UiButtonComponent, {
-      injector: this.injector
-    });
-    // using built in the browser to create your own custome element name
-    customElements.define('ui-button', el);
+    // To each WebComponent, register calling createWebComponent
+    this.createWebComponent(UiButtonComponent, 'ui-button')
+  }
+
+  createWebComponent(component: Type<any>, tag: string) {
+    const el = createCustomElement(component, { injector: this.injector });
+    customElements.define(tag, el);
   }
 }
